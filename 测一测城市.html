@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>测一测｜你适合在哪个城市定居</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Microsoft Yahei", sans-serif;
+    }
+    body {
+      background-color: #fff8f0;
+      color: #333;
+      min-height: 100vh;
+    }
+    .container {
+      max-width: 420px;
+      margin: 0 auto;
+      padding: 20px;
+      position: relative;
+    }
+    .footer-tip-left {
+      position: fixed;
+      left: 12px;
+      bottom: 12px;
+      font-size: 10px;
+      color: #e53935;
+      font-weight: bold;
+    }
+    .footer-tip-right {
+      position: fixed;
+      right: 12px;
+      bottom: 12px;
+      font-size: 10px;
+      color: #222;
+    }
+    .card {
+      background: #ffffffdd;
+      border-radius: 20px;
+      padding: 30px 24px;
+      box-shadow: 0 4px 16px rgba(255, 160, 120, 0.25);
+      margin-top: 40px;
+    }
+    .home-title {
+      font-size: 28px;
+      font-weight: bold;
+      text-align: center;
+      color: #d67b5c;
+      margin-bottom: 12px;
+    }
+    .home-subtitle {
+      text-align: center;
+      font-size: 15px;
+      color: #777;
+      margin-bottom: 24px;
+    }
+    .tag-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 32px;
+    }
+    .tag-item {
+      background-color: #fff0e6;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      color: #c0684c;
+    }
+    .start-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #ffb99c, #f78c6c);
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-size: 17px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .start-btn:hover {
+      opacity: 0.92;
+    }
+    .home-note {
+      margin-top: 20px;
+      text-align: center;
+      font-size: 11px;
+      color: #999;
+    }
+    .progress-wrap {
+      margin-bottom: 20px;
+    }
+    .progress-text {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      margin-bottom: 6px;
+    }
+    .progress-bar {
+      width: 100%;
+      height: 8px;
+      background: #f0d9cc;
+      border-radius: 999px;
+      overflow: hidden;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ffb99c, #f78c6c);
+      transition: all 0.3s ease;
+    }
+    .question-title {
+      font-size: 18px;
+      font-weight: 600;
+      margin-bottom: 24px;
+      line-height: 1.6;
+    }
+    .option-item {
+      padding: 14px 16px;
+      border: 1px solid #e8d2c4;
+      border-radius: 14px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .option-item:hover {
+      background-color: #fff0e6;
+    }
+    .result-title {
+      font-size: 24px;
+      font-weight: bold;
+      text-align: center;
+      color: #d67b5c;
+      margin-bottom: 16px;
+    }
+    .result-name {
+      font-size: 20px;
+      text-align: center;
+      margin-bottom: 12px;
+      color: #444;
+    }
+    .result-desc {
+      font-size: 15px;
+      line-height: 1.8;
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    .restart-btn {
+      width: 100%;
+      padding: 14px;
+      background: #f78c6c;
+      color: white;
+      border: none;
+      border-radius: 999px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .page {
+      display: none;
+    }
+    .page.active {
+      display: block;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- 首页 -->
+    <div class="page active" id="page-home">
+      <div class="card">
+        <div class="home-title">测一测，你适合在哪个城市定居</div>
+        <div class="home-subtitle">凭你的生活喜好，锁定你的本命定居之城</div>
+        <div class="tag-wrap">
+          <div class="tag-item">☀气候偏好｜藏着你的理想城市</div>
+          <div class="tag-item">🍜美食选择｜决定你的定居天堂</div>
+          <div class="tag-item">✨生活节奏｜适配你的专属节奏</div>
+          <div class="tag-item">🏙城市解读｜哪里才是你的归宿</div>
+        </div>
+        <button class="start-btn" id="btn-start">点击测试 →</button>
+        <div class="home-note">趣味测试仅供娱乐，仅供参考哦</div>
+      </div>
+    </div>
+
+    <!-- 答题页 -->
+    <div class="page" id="page-question">
+      <div class="card">
+        <div class="progress-wrap">
+          <div class="progress-text">
+            <span>答题进度</span>
+            <span id="progress-text">0 / 32</span>
+          </div>
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+        <div class="question-title" id="question-title"></div>
+        <div id="option-list"></div>
+      </div>
+    </div>
+
+    <!-- 结果页 -->
+    <div class="page" id="page-result">
+      <div class="card">
+        <div class="result-title">你的本命定居城市</div>
+        <div class="result-name" id="res-city"></div>
+        <div class="result-desc" id="res-text"></div>
+        <button class="restart-btn" id="btn-restart">重新测试</button>
+      </div>
+    </div>
+
+    <!-- 底部固定文字 -->
+    <div class="footer-tip-left">趣味性测试·非专业诊断</div>
+    <div class="footer-tip-right">一椰小金桔专属站点</div>
+  </div>
+
+<script>
+  // 结果库
+  const resultList = [
+    {
+      key: "hangzhou",
+      title: "浪漫江南型｜杭州",
+      desc: "温柔水乡，适合喜欢慢节奏、美景、奶茶与文艺烟火气的你。这里有风有湖，随手都是浪漫，是文艺爱好者的理想归宿。"
+    },
+    {
+      key: "dali",
+      title: "自由山海型｜大理",
+      desc: "风与花海，偏爱松弛感、日出日落、随性自由的灵魂归处。不用追赶内卷，晒晒太阳吹吹风就是最好的日子。"
+    },
+    {
+      key: "shanghai",
+      title: "摩登追梦型｜上海",
+      desc: "繁华大都市，适合敢闯敢拼、爱热闹、追逐新鲜机遇的人。遍地机会，潮流永不落幕，适合闪闪发光的追梦人。"
+    },
+    {
+      key: "chengdu",
+      title: "安逸烟火型｜成都",
+      desc: "好吃懒“卷”，火锅茶馆，舒服过日子才是头等大事。慢悠悠的生活，美食遍地，幸福感直接拉满。"
+    },
+    {
+      key: "xiamen",
+      title: "海滨治愈型｜厦门",
+      desc: "海风小岛，喜欢海边、干净街道、温柔慢生活的首选。清新海风，小岛落日，治愈所有不开心。"
+    },
+    {
+      key: "haerbin",
+      title: "冰爽酷爽型｜哈尔滨",
+      desc: "冰雪童话，爱大雪、烧烤、豪爽热闹氛围的快乐星球。漫天白雪，热情烟火，适合喜欢冬天的快乐选手。"
+    },
+    {
+      key: "shenzhen",
+      title: "活力暖阳型｜深圳",
+      desc: "热血向前，搞钱第一，永远充满新鲜机会的年轻之城。年轻有活力，机会多多，适合敢拼敢闯的热血少年少女。"
+    },
+    {
+      key: "xian",
+      title: "古都沉静型｜西安",
+      desc: "千年古韵，偏爱历史古风、美食底蕴、厚重氛围感。一城历史，遍地美食，古风爱好者直接沦陷。"
+    },
+    {
+      key: "haikou",
+      title: "热带海岛型｜海口",
+      desc: "四季暖阳，喜欢常年夏天、海边躺平、温润气候。永远是夏天，沙滩海风，适合热爱暖阳的懒人。"
+    },
+    {
+      key: "chongqing",
+      title: "山水宜居型｜重庆",
+      desc: "山城迷境，偏爱立体风景、超多美食、热闹江湖气息。魔幻山城，美食无敌，江湖氛围感直接拉满。"
+    }
+  ];
+
+  // 题目池：32 题，每题 4 选项，绑定计分 key
+  const questionList = [
+    {
+      title: "夏天太热的时候你第一反应是？",
+      options: [
+        { text: "躲进湖边吹微风", score: "hangzhou" },
+        { text: "找个有风的地方躺平", score: "dali" },
+        { text: "空调房疯狂追剧逛街", score: "shanghai" },
+        { text: "来一顿火辣辣火锅", score: "chengdu" }
+      ]
+    },
+    {
+      title: "周末不用上班你更想怎么度过？",
+      options: [
+        { text: "逛古镇喝茶散步", score: "hangzhou" },
+        { text: "去郊外看云看日落", score: "dali" },
+        { text: "打卡网红新店展览", score: "shanghai" },
+        { text: "宅家吃火锅打麻将", score: "chengdu" }
+      ]
+    },
+    {
+      title: "理想中的傍晚是什么样子？",
+      options: [
+        { text: "湖边晚风，路灯温柔", score: "hangzhou" },
+        { text: "旷野落日，漫天晚霞", score: "dali" },
+        { text: "霓虹亮起，街头热闹", score: "shanghai" },
+        { text: "街边小吃，烟火腾腾", score: "chengdu" }
+      ]
+    },
+    {
+      title: "提到好吃的你最先想到什么？",
+      options: [
+        { text: "江南甜糕精致小点", score: "hangzhou" },
+        { text: "鲜花饼与野生菌", score: "dali" },
+        { text: "各国料理应有尽有", score: "shanghai" },
+        { text: "麻辣火锅串串香", score: "chengdu" }
+      ]
+    },
+    {
+      title: "你更能接受下面哪一种天气？",
+      options: [
+        { text: "绵绵细雨温柔湿润", score: "hangzhou" },
+        { text: "晴空万里微风和煦", score: "dali" },
+        { text: "四季分明冷热清晰", score: "shanghai" },
+        { text: "潮湿闷热好吃就行", score: "chengdu" }
+      ]
+    },
+    {
+      title: "下雪的时候你的第一想法？",
+      options: [
+        { text: "断桥赏雪氛围感拉满", score: "hangzhou" },
+        { text: "少见！拍一张好看照片", score: "dali" },
+        { text: "逛街看雪景大片", score: "shanghai" },
+        { text: "下雪必须配火锅", score: "chengdu" }
+      ]
+    },
+    {
+      title: "如果搬家，优先看重？",
+      options: [
+        { text: "风景好看，环境雅致", score: "hangzhou" },
+        { text: "人少安静，自在松弛", score: "dali" },
+        { text: "机会多，发展空间大", score: "shanghai" },
+        { text: "美食多，生活舒服", score: "chengdu" }
+      ]
+    },
+    {
+      title: "空闲旅行你更喜欢去哪？",
+      options: [
+        { text: "江南水乡园林古镇", score: "hangzhou" },
+        { text: "山野草原自由之地", score: "dali" },
+        { text: "繁华商圈潮流都市", score: "shanghai" },
+        { text: "美食小城狂吃一顿", score: "chengdu" }
+      ]
+    },
+    {
+      title: "你更喜欢什么类型的街道？",
+      options: [
+        { text: "绿树成荫，温婉雅致", score: "hangzhou" },
+        { text: "宽阔随性，沿路花海", score: "dali" },
+        { text: "高楼林立，霓虹闪闪", score: "shanghai" },
+        { text: "大街小巷全是小吃", score: "chengdu" }
+      ]
+    },
+    {
+      title: "下班之后你想干嘛？",
+      options: [
+        { text: "湖边散步放松心情", score: "hangzhou" },
+        { text: "找个小店吹吹晚风", score: "dali" },
+        { text: "健身探店看演出", score: "shanghai" },
+        { text: "约朋友吃夜宵唠嗑", score: "chengdu" }
+      ]
+    },
+    {
+      title: "奶茶你偏爱哪一款？",
+      options: [
+        { text: "清新桂花龙井奶茶", score: "hangzhou" },
+        { text: "鲜花奶盖清爽甜饮", score: "dali" },
+        { text: "网红限定新款奶茶", score: "shanghai" },
+        { text: "麻辣搭配冰粉甜水", score: "chengdu" }
+      ]
+    },
+    {
+      title: "你更害怕哪一样？",
+      options: [
+        { text: "没有好看的风景", score: "hangzhou" },
+        { text: "每天紧绷不停内卷", score: "dali" },
+        { text: "城市无聊没有新鲜事", score: "shanghai" },
+        { text: "吃饭全都没有味道", score: "chengdu" }
+      ]
+    },
+    {
+      title: "理想邻居是什么样？",
+      options: [
+        { text: "温柔安静，互不打扰", score: "hangzhou" },
+        { text: "随性自在，见面微笑", score: "dali" },
+        { text: "独立忙碌，各自发光", score: "shanghai" },
+        { text: "热情好客，一起吃饭", score: "chengdu" }
+      ]
+    },
+    {
+      title: "对于堵车你的态度？",
+      options: [
+        { text: "慢慢开，欣赏沿途风景", score: "hangzhou" },
+        { text: "无所谓，本来节奏就慢", score: "dali" },
+        { text: "有点烦，但是可以接受", score: "shanghai" },
+        { text: "堵车刚好可以想想吃啥", score: "chengdu" }
+      ]
+    },
+    {
+      title: "春天来了你最期待？",
+      options: [
+        { text: "樱花盛开，西湖春游", score: "hangzhou" },
+        { text: "遍地花开，风吹麦浪", score: "dali" },
+        { text: "新款时装潮流上新", score: "shanghai" },
+        { text: "开春第一顿麻辣串串", score: "chengdu" }
+      ]
+    },
+    {
+      title: "你喜欢城市的地标是？",
+      options: [
+        { text: "湖水园林诗意古风", score: "hangzhou" },
+        { text: "远山湖泊自然治愈", score: "dali" },
+        { text: "摩天大楼时尚地标", score: "shanghai" },
+        { text: "可爱熊猫软萌地标", score: "chengdu" }
+      ]
+    },
+    {
+      title: "如果养宠物更适合在哪？",
+      options: [
+        { text: "公园超多适合散步", score: "hangzhou" },
+        { text: "广阔草地随便撒欢", score: "dali" },
+        { text: "宠物商店超级齐全", score: "shanghai" },
+        { text: "小区到处都是遛狗人", score: "chengdu" }
+      ]
+    },
+    {
+      title: "看海的时候你会？",
+      options: [
+        { text: "安静吹海风发呆", score: "xiamen" },
+        { text: "拍照打卡疯狂出片", score: "haikou" },
+        { text: "海边夜市狂吃海鲜", score: "chongqing" },
+        { text: "看完海马上找美食", score: "xian" }
+      ]
+    },
+    {
+      title: "提到大海你第一反应？",
+      options: [
+        { text: "干净小岛清新海风", score: "xiamen" },
+        { text: "常年盛夏沙滩椰树", score: "haikou" },
+        { text: "山城江景雾都夜景", score: "chongqing" },
+        { text: "古城城墙落日晚风", score: "xian" }
+      ]
+    },
+    {
+      title: "冬天你更偏爱？",
+      options: [
+        { text: "温暖海边没有寒冬", score: "xiamen" },
+        { text: "全年温暖四季夏天", score: "haikou" },
+        { text: "大雪纷飞冰雪乐园", score: "haerbin" },
+        { text: "暖阳古城小吃热汤", score: "xian" }
+      ]
+    },
+    {
+      title: "看到古建筑你会？",
+      options: [
+        { text: "慢慢逛感受安静氛围", score: "xian" },
+        { text: "疯狂拍照记录美景", score: "hangzhou" },
+        { text: "打卡之后去找好吃的", score: "chongqing" },
+        { text: "感叹古人也太会造景", score: "xiamen" }
+      ]
+    },
+    {
+      title: "一座城市吸引你首先是？",
+      options: [
+        { text: "超多机会适合搞事业", score: "shenzhen" },
+        { text: "古城历史文化底蕴", score: "xian" },
+        { text: "魔幻独特山城风景", score: "chongqing" },
+        { text: "海边清新治愈氛围", score: "xiamen" }
+      ]
+    },
+    {
+      title: "你喜欢城市的夜晚？",
+      options: [
+        { text: "江边灯火层层叠叠", score: "chongqing" },
+        { text: "古城灯笼古风氛围感", score: "xian" },
+        { text: "海边星光温柔安静", score: "xiamen" },
+        { text: "永不打烊繁华夜市", score: "shenzhen" }
+      ]
+    },
+    {
+      title: "你更适合哪种城市节奏？",
+      options: [
+        { text: "飞快向前，热血打拼", score: "shenzhen" },
+        { text: "慢悠悠享受每一天", score: "dali" },
+        { text: "不快不慢刚刚好", score: "hangzhou" },
+        { text: "热闹喧嚣烟火不停", score: "chongqing" }
+      ]
+    },
+    {
+      title: "说到烧烤你想到？",
+      options: [
+        { text: "大雪天热气腾腾烧烤", score: "haerbin" },
+        { text: "海边鲜美的海鲜烧烤", score: "haikou" },
+        { text: "山城夜市麻辣烧烤", score: "chongqing" },
+        { text: "古城街边特色烤串", score: "xian" }
+      ]
+    },
+    {
+      title: "你喜欢什么样的风？",
+      options: [
+        { text: "冰爽冬日凛冽寒风", score: "haerbin" },
+        { text: "热带暖暖的椰岛海风", score: "haikou" },
+        { text: "海岛轻柔咸咸海风", score: "xiamen" },
+        { text: "江南温润绵绵和风", score: "hangzhou" }
+      ]
+    },
+    {
+      title: "如果创业你首选哪里？",
+      options: [
+        { text: "机会超多年轻新城", score: "shenzhen" },
+        { text: "网红小城流量宝地", score: "dali" },
+        { text: "大都市资源拉满", score: "shanghai" },
+        { text: "美食城市轻松创业", score: "chengdu" }
+      ]
+    },
+    {
+      title: "迷路的时候你会觉得？",
+      options: [
+        { text: "山城迷路遇见惊喜", score: "chongqing" },
+        { text: "古城迷路别有风味", score: "xian" },
+        { text: "海边迷路吹吹海风", score: "xiamen" },
+        { text: "大城市迷路赶紧导航", score: "shenzhen" }
+      ]
+    },
+    {
+      title: "你更喜欢吃什么主食？",
+      options: [
+        { text: "鲜香地道面食小吃", score: "xian" },
+        { text: "火辣诱人山城小面", score: "chongqing" },
+        { text: "清淡鲜美的海鲜粥粉", score: "haikou" },
+        { text: "东北大碗香喷喷面食", score: "haerbin" }
+      ]
+    },
+    {
+      title: "提到年轻活力想到哪座城？",
+      options: [
+        { text: "遍地年轻人的深圳", score: "shenzhen" },
+        { text: "自由浪漫大理小城", score: "dali" },
+        { text: "潮流先锋大上海", score: "shanghai" },
+        { text: "阳光海岛海口", score: "haikou" }
+      ]
+    },
+    {
+      title: "你理想的城市关键词？",
+      options: [
+        { text: "冰雪、豪爽、热闹", score: "haerbin" },
+        { text: "海风、小岛、清新", score: "xiamen" },
+        { text: "古韵、历史、美食", score: "xian" },
+        { text: "热血、机遇、拼搏", score: "shenzhen" }
+      ]
+    },
+    {
+      title: "做完测试，你更向往？",
+      options: [
+        { text: "有风景，有温柔日子", score: "hangzhou" },
+        { text: "有自由，不用被催促", score: "dali" },
+        { text: "有梦想，敢向前闯荡", score: "shenzhen" },
+        { text: "有美食，天天很开心", score: "chengdu" }
+      ]
+    }
+  ];
+
+  let currentQuestion = 0;
+  let scoreObj = {
+    hangzhou: 0,
+    dali: 0,
+    shanghai: 0,
+    chengdu: 0,
+    xiamen: 0,
+    haerbin: 0,
+    shenzhen: 0,
+    xian: 0,
+    haikou: 0,
+    chongqing: 0
+  };
+
+  const pageHome = document.getElementById("page-home");
+  const pageQuestion = document.getElementById("page-question");
+  const pageResult = document.getElementById("page-result");
+  const btnStart = document.getElementById("btn-start");
+  const btnRestart = document.getElementById("btn-restart");
+  const questionTitle = document.getElementById("question-title");
+  const optionList = document.getElementById("option-list");
+  const progressText = document.getElementById("progress-text");
+  const progressFill = document.getElementById("progress-fill");
+  const resCity = document.getElementById("res-city");
+  const resText = document.getElementById("res-text");
+
+  function switchPage(el) {
+    document.querySelectorAll(".page").forEach(p => p.classList.remove("active"));
+    el.classList.add("active");
+  }
+
+  function resetAll() {
+    currentQuestion = 0;
+    scoreObj = {
+      hangzhou: 0,
+      dali: 0,
+      shanghai: 0,
+      chengdu: 0,
+      xiamen: 0,
+      haerbin: 0,
+      shenzhen: 0,
+      xian: 0,
+      haikou: 0,
+      chongqing: 0
+    };
+  }
+
+  function renderQuestion() {
+    const q = questionList[currentQuestion];
+    questionTitle.innerText = q.title;
+    optionList.innerHTML = "";
+    const percent = (currentQuestion / 32) * 100;
+    progressFill.style.width = percent + "%";
+    progressText.innerText = `${currentQuestion} / 32`;
+
+    q.options.forEach(opt => {
+      const div = document.createElement("div");
+      div.className = "option-item";
+      div.innerText = opt.text;
+      div.onclick = () => {
+        scoreObj[opt.score]++;
+        currentQuestion++;
+        if (currentQuestion >= questionList.length) {
+          showResult();
+        } else {
+          renderQuestion();
+        }
+      }
+      optionList.appendChild(div);
+    })
+  }
+
+  function showResult() {
+    let maxKey = "hangzhou";
+    let maxVal = 0;
+    for (const k in scoreObj) {
+      if (scoreObj[k] > maxVal) {
+        maxVal = scoreObj[k];
+        maxKey = k;
+      }
+    }
+    const myRes = resultList.find(r => r.key === maxKey);
+    resCity.innerText = myRes.title;
+    resText.innerText = myRes.desc;
+    switchPage(pageResult);
+  }
+
+  btnStart.onclick = () => {
+    resetAll();
+    switchPage(pageQuestion);
+    renderQuestion();
+  }
+
+  btnRestart.onclick = () => {
+    resetAll();
+    switchPage(pageHome);
+  }
+</script>
+</body>
+</html>
